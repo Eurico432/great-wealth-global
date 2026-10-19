@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Great Wealth Global</title>
+<style>
+:root{
+--bg-escuro:#040914;
+--bg-medio:#0A1428;
+--bg-claro:#112240;
+--dourado:#D4AF37;
+--texto:#FFFFFF;
+--texto-mut:#8B9BB4;
+--verde:#25D366;
+--vermelho:#E53935;
+--borda-ouro:1px solid rgba(212,175,55,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg-escuro);color:var(--texto);min-height:100vh;padding-bottom:70px;overflow-x:hidden}
+.tela{display:none}.tela.ativa{display:block}
+.hidden{display:none!important}
+
+/* LOGIN E CADASTRO */
+.auth-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at top, var(--bg-claro) 0%, var(--bg-escuro) 100%)}
+.form-box{background:var(--bg-medio);padding:30px 20px;border-radius:20px;width:100%;max-width:400px;border:var(--borda-ouro);box-shadow:0 15px 50px rgba(0,0,0,0.8)}
+.form-logo{text-align:center;margin-bottom:25px}
+.form-logo h1{font-size:22px;font-weight:900;color:var(--texto);letter-spacing:1px}
+.form-logo span{color:var(--dourado)}
+.form-logo p{font-size:10px;color:var(--texto-mut);margin-top:5px;text-transform:uppercase;letter-spacing:2px}
+.form-box h2{text-align:center;margin-bottom:20px;font-size:18px;font-weight:700}
+.form-group{margin-bottom:15px}
+.form-group label{display:block;font-size:11px;color:var(--dourado);margin-bottom:5px;font-weight:700}
+.form-group input, .form-group select{width:100%;padding:14px;border:1px solid rgba(212,175,55,0.4);border-radius:10px;background:var(--bg-escuro);color:var(--texto);font-size:14px;outline:none}
+.form-group input:focus{border-color:var(--dourado)}
+.btn-dourado{width:100%;padding:15px;background:linear-gradient(135deg,var(--dourado),#B8952C);color:var(--bg-escuro);border:none;border-radius:10px;font-size:15px;font-weight:900;cursor:pointer;margin-top:10px}
+.btn-dourado:disabled{opacity:0.5}
+.link-troca{text-align:center;margin-top:20px;font-size:12px;color:var(--texto-mut)}
+.link-troca a{color:var(--dourado);font-weight:800;cursor:pointer}
+.msg{display:none;padding:10px;margin-bottom:15px;border-radius:8px;font-size:12px;text-align:center}
+.msg.error{background:rgba(229,57,53,0.1);color:#FF8A80;border:1px solid rgba(229,57,53,0.3)}
+.msg.success{background:rgba(37,211,102,0.1);color:var(--verde);border:1px solid rgba(37,211,102,0.3)}
+.btn-whats{background:#25D366;color:#fff;border:none;padding:12px;border-radius:10px;font-size:13px;font-weight:800;width:100%;margin-top:15px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-suporte{background:transparent;color:var(--dourado);border:1px solid var(--dourado);padding:12px;border-radius:10px;font-size:13px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* HEADER APP */
+header{background:var(--bg-medio);padding:15px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;border-bottom:var(--borda-ouro)}
+header .brand{display:flex;align-items:center;gap:10px}
+header .brand-logo{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--dourado),#B8952C);color:var(--bg-escuro);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px}
+header .brand-name h1{font-size:14px;font-weight:900;letter-spacing:0.5px}
+header .brand-name h1 span{color:var(--dourado)}
+header .brand-name p{font-size:8px;color:var(--texto-mut);text-transform:uppercase;letter-spacing:1px}
+header .top-actions{display:flex;gap:8px;align-items:center}
+header .top-btn{background:var(--bg-claro);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--dourado);position:relative}
+header .top-btn .badge{position:absolute;top:-2px;right:-2px;background:var(--vermelho);color:#fff;font-size:8px;font-weight:900;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* SALDO */
+.saldo-card{background:linear-gradient(135deg,var(--bg-medio),var(--bg-claro));border:var(--borda-ouro);border-radius:16px;padding:18px;margin:15px;position:relative;overflow:hidden}
+.saldo-card h3{font-size:12px;color:var(--texto-mut);font-weight:600}
+.saldo-card .valor{font-size:32px;font-weight:900;margin:5px 0 15px;color:var(--texto)}
+.saldo-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.saldo-box{background:var(--bg-escuro);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px}
+.saldo-box .ico{font-size:18px}
+.saldo-box .info p{font-size:9px;color:var(--texto-mut);text-transform:uppercase;font-weight:700}
+.saldo-box .info h4{font-size:14px;font-weight:900;margin-top:2px}
+.saldo-box .info h4.verde{color:var(--verde)}
+.saldo-box .info h4.dourado{color:var(--dourado)}
+
+/* FAIXA DEPÓSITO */
+.faixa-deposito{background:linear-gradient(90deg,var(--bg-medio),rgba(212,175,55,0.2));border:1px solid var(--dourado);border-radius:10px;margin:0 15px 15px;padding:12px;display:flex;justify-content:space-between;align-items:center}
+.faixa-deposito .texto{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:var(--dourado)}
+.faixa-deposito .texto p{font-size:9px;color:var(--texto);font-weight:400}
+.faixa-deposito button{background:var(--dourado);color:var(--bg-escuro);border:none;padding:6px 12px;border-radius:6px;font-weight:900;font-size:10px}
+
+/* GRELHA BOTÕES */
+.secao-titulo{display:flex;justify-content:space-between;align-items:center;margin:15px 15px 10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.secao-titulo h3{font-size:14px;font-weight:800;display:flex;align-items:center;gap:5px}
+.secao-titulo a{font-size:11px;color:var(--texto-mut)}
+.grid-acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 15px 15px}
+.grid-btn{background:var(--bg-medio);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:12px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.grid-btn:active{transform:scale(0.97)}
+.grid-btn .ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.grid-btn .info h4{font-size:11px;font-weight:800;color:var(--texto)}
+.grid-btn .info p{font-size:8px;color:var(--texto-mut);margin-top:2px}
+.bg-azul{background:rgba(37,99,235,0.2);color:#4FC3F7}
+.bg-verde{background:rgba(37,211,102,0.2);color:var(--verde)}
+.bg-roxo{background:rgba(156,39,176,0.2);color:#E040FB}
+.bg-ouro{background:rgba(212,175,55,0.2);color:var(--dourado)}
+.bg-vermelho{background:rgba(229,57,53,0.2);color:#FF8A80}
+
+/* MENU INFERIOR */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-medio);border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-around;padding:8px 0;z-index:100}
+.nav-item{text-align:center;font-size:8px;color:var(--texto-mut);cursor:pointer;flex:1;font-weight:700}
+.nav-item .ico{font-size:18px;display:block;margin-bottom:2px}
+.nav-item.active{color:var(--dourado)}
+.nav-item.active .ico{color:var(--dourado)}
+
+/* CARDS MINI E ADMIN */
+.card-mini{background:var(--bg-medio);border-radius:12px;padding:15px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.05)}
+.card-mini .nome{font-size:13px;font-weight:800;color:var(--dourado);margin-bottom:4px}
+.card-mini .info{font-size:10px;color:var(--texto-mut);margin-bottom:2px}
+.card-mini .info b{color:var(--texto)}
+.card-mini .acoes{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.card-mini .acoes button{flex:1;padding:8px;border:none;border-radius:6px;font-weight:800;font-size:9px;cursor:pointer}
+.btn-aprovar{background:var(--verde);color:var(--bg-escuro)}
+.btn-rejeitar{background:var(--vermelho);color:#fff}
+.btn-cinza{background:var(--bg-claro);color:var(--dourado);border:1px solid var(--dourado)}
+.btn-azul{background:#2563EB;color:#fff}
+
+/* PAINEL ADMIN MOBILE */
+.admin-layout{display:flex;flex-direction:column;min-height:100vh;background:var(--bg-escuro);position:fixed;top:0;left:0;width:100%;height:100%;overflow-y:auto;z-index:2000}
+.sidebar{width:100%;background:var(--bg-medio);border-bottom:var(--borda-ouro);display:flex;flex-direction:row;align-items:center;padding:10px;overflow-x:auto;gap:10px;position:sticky;top:0;z-index:10}
+.sidebar-menu{display:flex;flex-direction:row;gap:8px;width:100%;justify-content:center}
+.sidebar-item{width:60px;height:50px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--texto-mut);cursor:pointer;font-size:8px;font-weight:700;flex-shrink:0}
+.sidebar-item .ico{font-size:18px;margin-bottom:2px}
+.sidebar-item.active{background:rgba(212,175,55,0.1);color:var(--dourado);border:1px solid rgba(212,175,55,0.3)}
+.admin-content{flex:1;padding:15px;padding-bottom:80px;width:100%}
+.admin-header{background:var(--bg-medio);border:var(--borda-ouro);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.admin-header .info h2{font-size:13px;font-weight:900}
+.admin-header .info h2 span{color:var(--dourado)}
+.admin-header .info p{font-size:9px;color:var(--texto-mut)}
+.admin-header .user .avatar{width:30px;height:30px;border-radius:50%;background:var(--bg-claro);border:1px solid var(--dourado);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--dourado);font-size:12px}
+.admin-section-title{font-size:11px;color:var(--dourado);font-weight:900;text-transform:uppercase;letter-spacing:1px;margin:20px 0 10px;border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:5px}
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}
+.admin-btn{background:var(--bg-medio);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;cursor:pointer}
+.admin-btn .ico{font-size:14px;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.admin-btn .info h4{font-size:10px;font-weight:800;color:var(--texto)}
+.admin-btn .info p{font-size:8px;color:var(--texto-mut)}
+.admin-input-group{margin-bottom:10px}
+.admin-input-group label{display:block;font-size:10px;color:var(--dourado);margin-bottom:4px;font-weight:700}
+.admin-input-group input, .admin-input-group select{width:100%;padding:10px;border:1px solid rgba(212,175,55,0.3);border-radius:8px;background:var(--bg-escuro);color:var(--texto);font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- TELA LOADING -->
+<div id="telaLoading" class="tela ativa">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:var(--bg-escuro)">
+    <h1 style="font-size:24px;color:var(--dourado);font-weight:900;">GREAT WEALTH</h1>
+    <p style="color:var(--texto-mut);font-size:11px;margin-top:5px;">Conectando...</p>
+  </div>
+</div>
+
+<!-- TELA BOAS VINDAS -->
+<div id="welcomeOverlay" class="welcome-overlay hidden" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-escuro);z-index:9999;text-align:center;">
+  <h1 style="font-size:20px;color:var(--dourado);font-weight:900;margin-bottom:10px;">GREAT WEALTH GLOBAL</h1>
+  <h2 style="font-size:14px;color:var(--texto);margin-bottom:5px;">Bem-vindo de volta,</h2>
+  <div class="nome" id="welcomeNome" style="color:var(--dourado);font-size:18px;font-weight:900;">...</div>
+  <p style="margin-top:15px;font-size:11px;color:var(--texto-mut)">Seu futuro começa hoje.</p>
+</div>
+
+<!-- TELA LOGIN / CADASTRO -->
+<div id="telaAuth" class="tela">
+  <div class="auth-container">
+    <div class="form-box">
+      <div class="form-logo">
+        <h1>GREAT WEALTH <span>GLOBAL</span></h1>
+        <p>Investimentos Inteligentes</p>
+      </div>
+      <div id="mensagemAuth" class="msg"></div>
+
+      <div id="divLogin">
+        <h2>Entrar na conta</h2>
+        <form id="formLogin" autocomplete="off">
+          <div class="form-group"><label>Número de Telefone</label><input type="tel" id="l_tel" placeholder="9XX XXX XXX" inputmode="numeric"></div>
+          <div class="form-group"><label>Senha</label><input type="password" id="l_pass" placeholder="Sua senha de 6 dígitos" maxlength="6" inputmode="numeric"></div>
+          <button type="submit" class="btn-dourado" id="btnLogin">ENTRAR</button>
+        </form>
+        <div class="link-troca">Não tem uma conta? <a onclick="trocarTelaAuth('cadastro')">Registar agora</a></div>
+      </div>
+
+      <div id="divCadastro" class="hidden">
+        <h2>Criar Conta</h2>
+        <form id="formCadastro" autocomplete="off">
+          <div class="form-group"><label>Nome Completo</label><input type="text" id="r_name" placeholder="Seu nome completo"></div>
+          <div class="form-group"><label>Número de Telefone</label><input type="tel" id="r_tel" placeholder="9XX XXX XXX" inputmode="numeric"></div>
+          <div class="form-group"><label>Senha (6 dígitos)</label><input type="password" id="r_pass" placeholder="Crie uma senha numérica" maxlength="6" inputmode="numeric"></div>
+          <div class="form-group"><label>Confirmar Senha</label><input type="password" id="r_pass2" placeholder="Repita a senha" maxlength="6" inputmode="numeric"></div>
+          <div class="form-group"><label>Código de Convite (Opcional)</label><input type="text" id="r_code" placeholder="Código de quem te convidou"></div>
+          <button type="submit" class="btn-dourado" id="btnCadastro">CRIAR CONTA</button>
+        </form>
+        <div class="link-troca">Já tem conta? <a onclick="trocarTelaAuth('login')">Entrar</a></div>
+      </div>
+      
+      <button class="btn-whats" onclick="abrirGrupoAuth()">💬 ENTRAR NO GRUPO WHATSAPP</button>
+      <button class="btn-suporte" onclick="abrirSuporteAuth()">🎧 FALAR COM SUPORTE</button>
+    </div>
+  </div>
+</div><!-- TELA PRINCIPAL DO USUÁRIO -->
+<div id="telaApp" class="tela">
+  <header>
+    <div class="brand">
+      <div class="brand-logo" id="headerLogo">G</div>
+      <div class="brand-name">
+        <h1>GREAT WEALTH <span>GLOBAL</span></h1>
+        <p>Investir hoje, colher amanhã</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="top-btn" onclick="mudarTab('perfil')">👤</button>
+      <button class="top-btn" onclick="mostrarNotificacoes()">🔔<span class="badge">3</span></button>
+    </div>
+  </header>
+  <div id="conteudoApp"></div>
+  
+  <div class="bottom-nav">
+    <div class="nav-item active" data-tab="inicio" onclick="mudarTab('inicio')"><span class="ico">🏠</span>Início</div>
+    <div class="nav-item" data-tab="investir" onclick="mudarTab('investir')"><span class="ico">📈</span>Investir</div>
+    <div class="nav-item" data-tab="depositar" onclick="mudarTab('depositar')"><span class="ico">💰</span>Depósito</div>
+    <div class="nav-item" data-tab="equipa" onclick="mudarTab('equipa')"><span class="ico">👥</span>Equipa</div>
+    <div class="nav-item" data-tab="perfil" onclick="mudarTab('perfil')"><span class="ico">👤</span>Perfil</div>
+  </div>
+</div>
+
+<!-- TELA DO ADMIN -->
+<div id="telaAdmin" class="tela">
+  <div class="admin-layout">
+    <div class="sidebar">
+      <div class="sidebar-menu">
+        <div class="sidebar-item active" onclick="mudarTabAdmin('dashboard')"><span class="ico">🏠</span>Início</div>
+        <div class="sidebar-item" onclick="mudarTabAdmin('usuarios')"><span class="ico">👥</span>Users</div>
+        <div class="sidebar-item" onclick="mudarTabAdmin('financeiro')"><span class="ico">💳</span>Finanças</div>
+        <div class="sidebar-item" onclick="mudarTabAdmin('saques')"><span class="ico">💸</span>Saques</div>
+        <div class="sidebar-item" onclick="mudarTabAdmin('config')"><span class="ico">⚙️</span>Config</div>
+        <div class="sidebar-item" onclick="sair()"><span class="ico">🚪</span>Sair</div>
+      </div>
+    </div>
+    
+    <div class="admin-content">
+      <div class="admin-header">
+        <div class="info">
+          <h2>PAINEL <span>ADMIN</span></h2>
+          <p>Acesso Total</p>
+        </div>
+        <div class="user">
+          <div class="avatar" id="adminAvatar">A</div>
+        </div>
+      </div>
+      <div id="conteudoAdmin"></div>
+    </div>
+  </div>
+</div><script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+var NOME_PLATAFORMA = 'Great Wealth Global';
+var ADMIN_TELEFONE = '933798228';
+var SUPORTE_1 = '933798228';
+var SUPORTE_2 = '944478303';
+var SITE_URL = 'https://great-wealth-global.netlify.app';
+var PRAZO_DIAS = 400;
+var BONUS_BOAS_VINDAS = 800;
+var BONUS_CONVITE_PCT = 0.05;
+var TAXA_SAQUE = 0.07;
+var MIN_SAQUE = 850;
+var MIN_DEPOSITO = 8000;
+
+var DADOS_DEPOSITO = {
+  iban: '0040 0000 07106886101 27', titular: 'Eurico Cassoma Novais',
+  paypayNome: 'PayPayAO', paypayEntidade: '10116', paypayRef: '933798228',
+  unitelNome: 'Unitel Money', unitelEntidade: '00930', unitelRef: '933798228'
+};
+var LINKS_WHATSAPP = { grupo: '', grupo2: '' };
+
+var PLANOS = [
+{nome:'Auron',valor:8000,diario:400,total:160000},{nome:'Vanta',valor:14000,diario:700,total:280000},
+{nome:'Nexa',valor:20000,diario:1000,total:400000},{nome:'Zorin',valor:26000,diario:1300,total:520000},
+{nome:'Kyro',valor:32000,diario:1600,total:640000},{nome:'Elara',valor:38000,diario:1900,total:760000},
+{nome:'Vexon',valor:44000,diario:2200,total:880000},{nome:'Orion',valor:50000,diario:2500,total:1000000},
+{nome:'Astra',valor:56000,diario:2800,total:1120000},{nome:'Novar',valor:62000,diario:3100,total:1240000},
+{nome:'Velor',valor:68000,diario:3400,total:1360000},{nome:'Arven',valor:74000,diario:3700,total:1480000},
+{nome:'Zenth',valor:80000,diario:4000,total:1600000},{nome:'Kael',valor:86000,diario:4300,total:1720000},
+{nome:'Draven',valor:92000,diario:4600,total:1840000},{nome:'Lyra',valor:98000,diario:4900,total:1960000},
+{nome:'Aven',valor:104000,diario:5200,total:2080000},{nome:'Solen',valor:110000,diario:5500,total:2200000},
+{nome:'Nexor',valor:116000,diario:5800,total:2320000},{nome:'Veyra',valor:122000,diario:6100,total:2440000},
+{nome:'Altair',valor:128000,diario:6400,total:2560000},{nome:'Ravon',valor:134000,diario:6700,total:2680000},
+{nome:'Clyra',valor:140000,diario:7000,total:2800000},{nome:'Evren',valor:146000,diario:7300,total:2920000},
+{nome:'Torin',valor:152000,diario:7600,total:3040000},{nome:'Zyra',valor:158000,diario:7900,total:3160000},
+{nome:'Aeron',valor:164000,diario:8200,total:3280000},{nome:'Valen',valor:170000,diario:8500,total:3400000},
+{nome:'Oryn',valor:176000,diario:8800,total:3520000},{nome:'Kairo',valor:182000,diario:9100,total:3640000},
+{nome:'Thalen',valor:188000,diario:9400,total:3760000},{nome:'Zavian',valor:194000,diario:9700,total:3880000},
+{nome:'Lior',valor:200000,diario:10000,total:4000000},{nome:'Varen',valor:206000,diario:10300,total:4120000},
+{nome:'Kyren',valor:212000,diario:10600,total:4240000},{nome:'Aster',valor:218000,diario:10900,total:4360000},
+{nome:'Daxon',valor:224000,diario:11200,total:4480000},{nome:'Elion',valor:230000,diario:11500,total:4600000},
+{nome:'Virel',valor:236000,diario:11800,total:4720000},{nome:'Arion',valor:242000,diario:12100,total:4840000},
+{nome:'Zayden',valor:248000,diario:12400,total:4960000},{nome:'Corven',valor:254000,diario:12700,total:5080000},
+{nome:'Noven',valor:260000,diario:13000,total:5200000},{nome:'Xyron',valor:266000,diario:13300,total:5320000},
+{nome:'Alven',valor:272000,diario:13600,total:5440000},{nome:'Tavian',valor:278000,diario:13900,total:5560000},
+{nome:'Orlan',valor:284000,diario:14200,total:5680000},{nome:'Zevan',valor:290000,diario:14500,total:5800000},
+{nome:'Kaizen',valor:296000,diario:14800,total:5920000},{nome:'Veyon',valor:302000,diario:15100,total:6040000},
+{nome:'Aeris',valor:308000,diario:15400,total:6160000},{nome:'Riven',valor:314000,diario:15700,total:6280000},
+{nome:'Zorven',valor:320000,diario:16000,total:6400000},{nome:'Caelis',valor:326000,diario:16300,total:6520000},
+{nome:'Valtor',valor:332000,diario:16600,total:6640000},{nome:'Eryon',valor:338000,diario:16900,total:6760000},
+{nome:'Aziel',valor:344000,diario:17200,total:6880000},{nome:'Nexium',valor:350000,diario:17500,total:7000000}
+];
+
+var firebaseConfig = {
+  apiKey: "AIzaSyBtsmIszaiReZWB5r05XZpaZxu_yWZjKGQ",
+  authDomain: "greatwealthglobal-24f88.firebaseapp.com",
+  projectId: "greatwealthglobal-24f88",
+  storageBucket: "greatwealthglobal-24f88.firebasestorage.app",
+  messagingSenderId: "808036348704",
+  appId: "1:808036348704:web:a9a971e71fcd7d966a9d45"
+};
+
+firebase.initializeApp(firebaseConfig);
+var auth = firebase.auth();
+var db = firebase.firestore();
+
+var usuarioAtual = null, usuarios = [], depositos = [], saques = [], configGlobal = {};
+
+function formatKz(v){ return (Number(v)||0).toLocaleString('pt-AO',{minimumFractionDigits:2,maximumFractionDigits:2})+' Kz'; }
+function mostrarMsg(txt,tipo){ var el=document.getElementById('mensagemAuth'); if(!el)return; el.textContent=txt; el.className='msg '+tipo; el.style.display='block'; setTimeout(function(){el.style.display='none';},5000); }
+function copiar(txt){ if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert('✅ Copiado: '+txt);});}else{prompt('Copie:',txt);} }
+function gerarCodigo(){ var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; var s='GW'; for(var i=0;i<6;i++) s+=c.charAt(Math.floor(Math.random()*c.length)); return s; }
+function gerarLink(cod){ var c='abcdefghijkmnpqrstuvwxyz23456789'; var s=''; for(var i=0;i<10;i++) s+=c.charAt(Math.floor(Math.random()*c.length)); return SITE_URL+'/?ref='+cod+'&l='+s; }
+function trocarTelaAuth(t){ document.getElementById('divCadastro').classList.toggle('hidden',t!=='cadastro'); document.getElementById('divLogin').classList.toggle('hidden',t!=='login'); document.getElementById('mensagemAuth').style.display='none'; }
+function mostrarTela(id){ var ts=document.querySelectorAll('.tela'); for(var i=0;i<ts.length;i++) ts[i].classList.remove('ativa'); document.getElementById(id).classList.add('ativa'); }
+function normalizarTelefone(t){ return (t||'').replace(/\s/g,'').replace(/\+244/,'').replace(/^244/,''); }
+
+function carregarUsuarios(cb){ db.collection('usuarios').get().then(function(s){ usuarios=[]; s.forEach(function(d){var x=d.data();x.uid=d.id;usuarios.push(x);}); if(cb)cb(); }).catch(function(){if(cb)cb();}); }
+function carregarDepositos(cb){ db.collection('depositos').orderBy('timestamp','desc').limit(300).get().then(function(s){ depositos=[]; s.forEach(function(d){var x=d.data();x.docId=d.id;depositos.push(x);}); if(cb)cb(); }).catch(function(){if(cb)cb();}); }
+function carregarSaques(cb){ db.collection('saques').orderBy('timestamp','desc').limit(300).get().then(function(s){ saques=[]; s.forEach(function(d){var x=d.data();x.docId=d.id;saques.push(x);}); if(cb)cb(); }).catch(function(){if(cb)cb();}); }
+function carregarConfig(cb){
+  db.collection('config').doc('global').get().then(function(doc){
+    if(doc.exists){ configGlobal=doc.data();
+      if(configGlobal.whatsappGrupo) LINKS_WHATSAPP.grupo=configGlobal.whatsappGrupo;
+      if(configGlobal.taxaSaque) TAXA_SAQUE=configGlobal.taxaSaque;
+      if(configGlobal.minSaque) MIN_SAQUE=configGlobal.minSaque;
+      if(configGlobal.minDeposito) MIN_DEPOSITO=configGlobal.minDeposito;
+      if(configGlobal.suporte1) SUPORTE_1=configGlobal.suporte1;
+      if(configGlobal.suporte2) SUPORTE_2=configGlobal.suporte2;
+      if(configGlobal.iban) DADOS_DEPOSITO.iban=configGlobal.iban;
+      if(configGlobal.titular) DADOS_DEPOSITO.titular=configGlobal.titular;
+      if(configGlobal.paypayEntidade) DADOS_DEPOSITO.paypayEntidade=configGlobal.paypayEntidade;
+      if(configGlobal.paypayRef) DADOS_DEPOSITO.paypayRef=configGlobal.paypayRef;
+      if(configGlobal.unitelEntidade) DADOS_DEPOSITO.unitelEntidade=configGlobal.unitelEntidade;
+      if(configGlobal.unitelRef) DADOS_DEPOSITO.unitelRef=configGlobal.unitelRef;
+    } if(cb)cb();
+  }).catch(function(){if(cb)cb();});
+}
+function carregarTudo(cb){ carregarConfig(function(){ carregarUsuarios(function(){ carregarDepositos(function(){ carregarSaques(function(){ if(cb)cb(); }); }); }); }); }
+
+document.getElementById('formCadastro').addEventListener('submit',function(e){
+  e.preventDefault();
+  var nome=document.getElementById('r_name').value.trim(); var tel=normalizarTelefone(document.getElementById('r_tel').value);
+  var senha=document.getElementById('r_pass').value; var senha2=document.getElementById('r_pass2').value; var cod=document.getElementById('r_code').value.trim().toUpperCase();
+  if(!nome||!tel||!senha){mostrarMsg('Preencha todos os campos.','error');return;}
+  if(tel.length<9){mostrarMsg('Telefone inválido.','error');return;}
+  if(senha.length!==6){mostrarMsg('A senha deve ter 6 dígitos.','error');return;}
+  if(senha!==senha2){mostrarMsg('As senhas não coincidem.','error');return;}
+  document.getElementById('btnCadastro').disabled=true; document.getElementById('btnCadastro').textContent='A criar conta...';
+  var emailInterno=tel+'@greatwealth.app';
+  auth.createUserWithEmailAndPassword(emailInterno,senha).then(function(cred){
+    var uid=cred.user.uid; var codigoUnico=gerarCodigo(); var isAdmin=(tel===ADMIN_TELEFONE);
+    var dados={ uid:uid, nome:nome, telefone:tel, email:emailInterno, codigoConvite:codigoUnico, linkConvite:gerarLink(codigoUnico), convidadoPor:cod||null, admin:isAdmin, saldo:BONUS_BOAS_VINDAS, totalDepositado:0, totalSacado:0, totalBonus:0, ganhosHoje:0, planosAtivos:[], dataRegisto:new Date().toLocaleDateString('pt-BR'), bloqueado:false, timestamp:firebase.firestore.FieldValue.serverTimestamp() };
+    return db.collection('usuarios').doc(uid).set(dados);
+  }).then(function(){
+    mostrarMsg('Conta criada! Faça login.','success'); document.getElementById('formCadastro').reset(); document.getElementById('l_tel').value=tel;
+    document.getElementById('btnCadastro').disabled=false; document.getElementById('btnCadastro').textContent='CRIAR CONTA';
+    setTimeout(function(){trocarTelaAuth('login');},2000);
+  }).catch(function(err){
+    document.getElementById('btnCadastro').disabled=false; document.getElementById('btnCadastro').textContent='CRIAR CONTA';
+    var m='Erro ao criar conta.'; if(err.code==='auth/email-already-in-use') m='Este número já está cadastrado.'; mostrarMsg(m,'error');
+  });
+});
+
+document.getElementById('formLogin').addEventListener('submit',function(e){
+  e.preventDefault();
+  var tel=normalizarTelefone(document.getElementById('l_tel').value); var senha=document.getElementById('l_pass').value;
+  if(!tel||!senha){mostrarMsg('Preencha o número e a senha.','error');return;}
+  var emailInterno=tel+'@greatwealth.app';
+  document.getElementById('btnLogin').disabled=true; document.getElementById('btnLogin').textContent='A entrar...';
+  auth.signInWithEmailAndPassword(emailInterno,senha).then(function(cred){ return db.collection('usuarios').doc(cred.user.uid).get(); })
+  .then(function(doc){
+    if(!doc.exists){ mostrarMsg('Perfil não encontrado.','error'); auth.signOut(); return; }
+    var d=doc.data(); d.uid=doc.id;
+    if(d.bloqueado){ mostrarMsg('Conta bloqueada. Contacte o suporte.','error'); auth.signOut(); return; }
+    usuarioAtual=d; abrirApp();
+  }).catch(function(err){
+    document.getElementById('btnLogin').disabled=false; document.getElementById('btnLogin').textContent='ENTRAR';
+    var m='Número ou senha incorretos.'; if(err.code==='auth/wrong-password') m='Senha incorreta.'; else if(err.code==='auth/user-not-found') m='Número não cadastrado.';
+    mostrarMsg(m,'error');
+  });
+});function creditarRendasPendentes(u){
+  if(!u||!u.planosAtivos||u.planosAtivos.length===0) return Promise.resolve(0);
+  var agora = Date.now(); var totalCreditado = 0; var planosAtualizados = []; var algumAlterado = false;
+  u.planosAtivos.forEach(function(p){
+    var ultimoCredito = p.ultimoCredito || p.dataInicio_timestamp || (agora - 24*60*60*1000);
+    var diff = agora - ultimoCredito; var dias = Math.floor(diff / (24*60*60*1000));
+    if(dias > 0){ var ganho = p.diario * dias; totalCreditado += ganho; p.ganhoTotal = (p.ganhoTotal || 0) + ganho; p.ultimoCredito = agora; algumAlterado = true; }
+    planosAtualizados.push(p);
+  });
+  if(!algumAlterado) return Promise.resolve(0);
+  var novoSaldo = u.saldo + totalCreditado; var novoGanhosHoje = (u.ganhosHoje || 0) + totalCreditado;
+  return db.collection('usuarios').doc(u.uid).update({ saldo: novoSaldo, ganhosHoje: novoGanhosHoje, planosAtivos: planosAtualizados, ultimoCreditoGlobal: agora }).then(function(){ usuarioAtual.saldo = novoSaldo; usuarioAtual.ganhosHoje = novoGanhosHoje; usuarioAtual.planosAtivos = planosAtualizados; return totalCreditado; });
+}
+
+function abrirApp(){
+  document.getElementById('headerLogo').textContent=usuarioAtual.nome.charAt(0).toUpperCase();
+  document.getElementById('welcomeNome').textContent=usuarioAtual.nome;
+  document.getElementById('welcomeOverlay').classList.remove('hidden');
+  mostrarTela('telaApp');
+  setTimeout(function(){
+    document.getElementById('welcomeOverlay').classList.add('hidden');
+    carregarTudo(function(){
+      creditarRendasPendentes(usuarioAtual).then(function(total){
+        if(total > 0){ setTimeout(function(){ alert('💰 Renda diária creditada!\n\nValor: '+formatKz(total)); }, 300); }
+        mudarTab('inicio');
+      });
+    });
+  },3000);
+}
+
+function sair(){ if(!confirm('Terminar sessão?'))return; auth.signOut().then(function(){ usuarioAtual=null; usuarios=[]; depositos=[]; saques=[]; mostrarTela('telaAuth'); document.getElementById('formLogin').reset(); document.getElementById('formCadastro').reset(); }); }
+
+function mudarTab(t){
+  var items=document.querySelectorAll('.nav-item');
+  for(var i=0;i<items.length;i++){ items[i].classList.toggle('active',items[i].getAttribute('data-tab')===t); }
+  var c=document.getElementById('conteudoApp');
+  if(t==='inicio') c.innerHTML=renderInicio(); else if(t==='investir') c.innerHTML=renderInvestir(); else if(t==='depositar') c.innerHTML=renderDepositar(); else if(t==='sacar') c.innerHTML=renderSacar(); else if(t==='equipa') c.innerHTML=renderEquipa(); else if(t==='perfil') c.innerHTML=renderPerfil();
+  window.scrollTo(0,0);
+}
+
+function abrirSuporte(){ var msg='Olá! Preciso de suporte na Great Wealth Global.'; window.open('https://wa.me/244'+SUPORTE_1+'?text='+encodeURIComponent(msg),'_blank'); }
+function abrirSuporteAuth(){ abrirSuporte(); }
+function abrirGrupoWA(){ var link = LINKS_WHATSAPP.grupo || 'https://wa.me/244'+SUPORTE_1; window.open(link,'_blank'); }
+function abrirGrupoAuth(){ abrirGrupoWA(); }
+function mostrarNotificacoes(){ var u=usuarioAtual; if(!u)return; var conv=usuarios.filter(function(x){return x.convidadoPor===u.codigoConvite;}).length; alert('🔔 Notificações\n\n💰 Saldo: '+formatKz(u.saldo)+'\n📈 Planos ativos: '+(u.planosAtivos?u.planosAtivos.length:0)+'\n👥 Convidados: '+conv); }
+
+function renderInicio(){
+  var u=usuarioAtual; var planos=u.planosAtivos||[]; var h='';
+  h+='<div class="saldo-card"><h3>Saldo Disponível 👁️</h3><div class="valor">'+formatKz(u.saldo)+'</div><div class="saldo-stats">';
+  h+='<div class="saldo-box"><div class="ico">📈</div><div class="info"><p>Ganhos Hoje</p><h4 class="verde">'+formatKz(u.ganhosHoje||0)+'</h4></div></div>';
+  h+='<div class="saldo-box"><div class="ico">🎁</div><div class="info"><p>Bónus</p><h4 class="dourado">'+formatKz(u.totalBonus||0)+'</h4></div></div>';
+  h+='</div></div>';
+  h+='<div class="faixa-deposito"><div class="texto"><span style="font-size:18px">👑</span><div>Seu crescimento é a nossa prioridade!<p>Juntos vamos mais longe.</p></div></div><button onclick="mudarTab(\'depositar\')">💳 Depósito ></button></div>';
+  h+='<div class="secao-titulo"><h3>👤 Área do Usuário</h3><a>Todas as opções ></a></div>';
+  h+='<div class="grid-acoes">';
+  h+='<div class="grid-btn" onclick="mudarTab(\'perfil\')"><div class="ico bg-azul">👤</div><div class="info"><h4>Meu Perfil</h4><p>Ver e editar dados</p></div></div>';
+  h+='<div class="grid-btn" onclick="alert(\'Carteira: Saldo total disponível para saque.\')"><div class="ico bg-verde">👛</div><div class="info"><h4>Carteira</h4><p>Gestão de saldo</p></div></div>';
+  h+='<div class="grid-btn" onclick="mudarTab(\'investir\')"><div class="ico bg-roxo">📈</div><div class="info"><h4>Meus Planos</h4><p>Seus investimentos</p></div></div>';
+  h+='<div class="grid-btn" onclick="verHistorico()"><div class="ico bg-ouro">📜</div><div class="info"><h4>Histórico</h4><p>Movimentações</p></div></div>';
+  h+='<div class="grid-btn" onclick="mudarTab(\'sacar\')"><div class="ico bg-azul">💸</div><div class="info"><h4>Levantamento</h4><p>Sacar lucros</p></div></div>';
+  h+='<div class="grid-btn" onclick="mudarTab(\'depositar\')"><div class="ico bg-ouro">💳</div><div class="info"><h4>Depósito</h4><p>Adicionar fundos</p></div></div>';
+  h+='<div class="grid-btn" onclick="mudarTab(\'equipa\')"><div class="ico bg-roxo">👥</div><div class="info"><h4>Indicações</h4><p>Convide amigos</p></div></div>';
+  h+='<div class="grid-btn" onclick="abrirSuporte()"><div class="ico bg-verde">🎧</div><div class="info"><h4>Fale Conosco</h4><p>Suporte 24/7</p></div></div>';
+  h+='<div class="grid-btn" onclick="alert(\'Segurança: Conta protegida.\')"><div class="ico bg-azul">🛡️</div><div class="info"><h4>Segurança</h4><p>Proteja sua conta</p></div></div>';
+  h+='<div class="grid-btn" onclick="alert(\'FAQ em breve.\')"><div class="ico bg-roxo">❓</div><div class="info"><h4>Perguntas</h4><p>Frequentes</p></div></div>';
+  h+='<div class="grid-btn" onclick="abrirGrupoWA()"><div class="ico bg-verde">💬</div><div class="info"><h4>Grupo VIP</h4><p>WhatsApp Oficial</p></div></div>';
+  h+='<div class="grid-btn" onclick="sair()"><div class="ico bg-vermelho">🚪</div><div class="info"><h4>Sair</h4><p>Encerrar sessão</p></div></div>';
+  h+='</div>';
+  h+='<div class="faixa-deposito" style="margin-top:10px;"><div class="texto"><span style="font-size:18px">🎯</span><div>Grandes resultados<p>com planejamento e constância.</p></div></div><button onclick="mudarTab(\'investir\')">Ver Planos ></button></div>';
+  if(u.admin) h+='<div style="text-align:center;margin:15px;"><button class="btn-dourado" onclick="mostrarTela(\'telaAdmin\'); mudarTabAdmin(\'dashboard\')">🔐 ENTRAR NO PAINEL ADMIN</button></div>';
+  return h;
+}
+
+function verHistorico(){ var u=usuarioAtual; var deps=depositos.filter(function(d){return d.userId===u.uid;}); var saqs=saques.filter(function(s){return s.userId===u.uid;}); var t='📋 Histórico\n\n'; if(deps.length===0&&saqs.length===0) t+='Nenhuma transação.'; deps.forEach(function(d){t+='💰 Depósito: '+formatKz(d.valor)+' — '+d.status+' ('+d.data+')\n';}); saqs.forEach(function(s){t+='🏧 Saque: '+formatKz(s.valor)+' — '+s.status+' ('+s.data+')\n';}); alert(t); }
+
+function renderInvestir(){
+  var u=usuarioAtual; var planos=u.planosAtivos||[];
+  var h='<div class="secao-titulo"><h3>📈 Planos de Investimento</h3><a onclick="mudarTab(\'inicio\')">Voltar</a></div>';
+  h+='<div class="saldo-card" style="padding:12px; margin-top:0;"><h3>Saldo Disponível</h3><div class="valor" style="font-size:22px; margin-bottom:0;">'+formatKz(u.saldo)+'</div></div>';
+  h+='<div style="padding:0 15px 10px; color:var(--dourado); font-size:11px; font-weight:700;">💡 Pode adquirir vários planos, mas não pode repetir o mesmo.</div>';
+  if(planos.length>0){
+    h+='<div class="secao-titulo" style="margin-top:10px;"><h3>💼 Meus Planos Ativos</h3></div><div style="padding:0 15px;">';
+    planos.forEach(function(p){ h+='<div class="card-mini" style="border-left:3px solid var(--verde)"><div class="nome">'+p.nome+' <span style="font-size:9px;color:var(--verde)">ATIVO</span></div><div class="info">Investido: <b>'+formatKz(p.valor)+'</b> | Renda: <b style="color:var(--verde)">'+formatKz(p.diario)+'</b></div><div class="info">Início: '+p.dataInicio+' | Prazo: '+p.prazo+'d</div><div class="info">Lucro: <b style="color:var(--dourado)">'+formatKz(p.ganhoTotal||0)+'</b></div></div>'; });
+    h+='</div>';
+  }
+  h+='<div class="secao-titulo" style="margin-top:15px;"><h3>🔥 Planos Disponíveis</h3></div><div class="grid-acoes" style="grid-template-columns:1fr;">';
+  PLANOS.forEach(function(p){
+    var jaTem=planos.some(function(x){return x.nome===p.nome;}); var pode=u.saldo>=p.valor && !jaTem;
+    var btnTxt = jaTem ? '✅ Adquirido' : (pode ? 'Investir Agora' : 'Saldo Insuficiente'); var btnDis = pode ? '' : 'disabled';
+    h+='<div class="card-mini" style="margin-bottom:8px"><div class="nome" style="font-size:15px">'+p.nome+'</div><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-top:8px; text-align:center; background:var(--bg-escuro); padding:6px; border-radius:6px;">';
+    h+='<div><div style="font-size:8px;color:var(--texto-mut)">INVESTIR</div><div style="font-size:11px;font-weight:800;color:var(--texto)">'+formatKz(p.valor)+'</div></div>';
+    h+='<div><div style="font-size:8px;color:var(--texto-mut)">DIÁRIO</div><div style="font-size:11px;font-weight:800;color:var(--verde)">'+formatKz(p.diario)+'</div></div>';
+    h+='<div><div style="font-size:8px;color:var(--texto-mut)">TOTAL</div><div style="font-size:11px;font-weight:800;color:var(--dourado)">'+formatKz(p.total)+'</div></div></div>';
+    h+='<button class="btn-dourado" style="margin-top:8px; padding:10px; font-size:13px;" '+btnDis+' onclick="investir(\''+p.nome+'\','+p.valor+','+p.diario+')">'+btnTxt+'</button></div>';
+  });
+  h+='</div>'; return h;
+}
+
+function investir(nome,valor,diario){
+  var u=usuarioAtual; if(u.saldo<valor){alert('Saldo insuficiente.');return;}
+  var planos=u.planosAtivos||[]; if(planos.some(function(x){return x.nome===nome;})){alert('Você já possui este plano ativo.');return;}
+  if(!confirm('Confirmar investimento?\n\nPlano: '+nome+'\nValor: '+formatKz(valor)+'\nDiário: '+formatKz(diario)+'\nPrazo: '+PRAZO_DIAS+' dias'))return;
+  var agora=Date.now(); planos.push({ nome:nome, valor:valor, diario:diario, prazo:PRAZO_DIAS, dataInicio:new Date().toLocaleDateString('pt-BR'), dataInicio_timestamp:agora, ultimoCredito:agora, ganhoTotal:0, id:agora });
+  var novoSaldo=u.saldo-valor;
+  db.collection('usuarios').doc(u.uid).update({saldo:novoSaldo,planosAtivos:planos}).then(function(){ usuarioAtual.saldo=novoSaldo; usuarioAtual.planosAtivos=planos; alert('✅ Plano ativado com sucesso!'); carregarTudo(function(){mudarTab('inicio');}); });
+}
+
+function renderDepositar(){
+  var h='<div class="secao-titulo"><h3>💰 Depositar</h3><a onclick="mudarTab(\'inicio\')">Voltar</a></div><div style="padding:0 15px;">';
+  h+='<div style="background:rgba(37,211,102,0.1); border-left:3px solid var(--verde); color:var(--verde); padding:10px; border-radius:6px; font-size:11px; margin-bottom:10px; text-align:center; font-weight:800;">⏱️ Depósito aprovado em 5 MINUTOS.</div>';
+  h+='<div style="background:rgba(212,175,55,0.1); border-left:3px solid var(--dourado); color:var(--dourado); padding:10px; border-radius:6px; font-size:11px; margin-bottom:10px;">⚠️ Valor Mínimo: '+formatKz(MIN_DEPOSITO)+'.</div>';
+  h+='<div class="card-mini" style="border:1px solid var(--dourado);"><div class="nome">🏦 Transferência Bancária</div><div class="info">IBAN: <b>'+DADOS_DEPOSITO.iban+'</b></div><div class="info">Titular: <b>'+DADOS_DEPOSITO.titular+'</b></div><button class="btn-dourado" onclick="copiar(\''+DADOS_DEPOSITO.iban+'\')" style="padding:6px; font-size:10px; margin-top:6px;">📋 COPIAR IBAN</button></div>';
+  h+='<div class="card-mini" style="border:1px solid var(--dourado);"><div class="nome">💳 '+DADOS_DEPOSITO.paypayNome+'</div><div class="info">Entidade: <b>'+DADOS_DEPOSITO.paypayEntidade+'</b></div><div class="info">Referência: <b>'+DADOS_DEPOSITO.paypayRef+'</b></div><button class="btn-dourado" onclick="copiar(\''+DADOS_DEPOSITO.paypayRef+'\')" style="padding:6px; font-size:10px; margin-top:6px;">📋 COPIAR REFERÊNCIA</button></div>';
+  h+='<div class="card-mini" style="border:1px solid var(--dourado);"><div class="nome">📱 '+DADOS_DEPOSITO.unitelNome+'</div><div class="info">Entidade: <b>'+DADOS_DEPOSITO.unitelEntidade+'</b></div><div class="info">Referência: <b>'+DADOS_DEPOSITO.unitelRef+'</b></div><button class="btn-dourado" onclick="copiar(\''+DADOS_DEPOSITO.unitelRef+'\')" style="padding:6px; font-size:10px; margin-top:6px;">📋 COPIAR REFERÊNCIA</button></div>';
+  h+='<div class="card-mini" style="border:1px solid var(--dourado); margin-top:10px;"><div class="nome">📤 Enviar Comprovativo</div><div class="form-group" style="margin-top:8px;"><label>Valor Depositado (Kz)</label><input type="number" id="dep_valor" placeholder="Ex: 8000"></div><div class="form-group"><label>Nº/Conta de Origem</label><input type="text" id="dep_conta" placeholder="Seu número"></div><div class="form-group"><label>Ficheiro (Imagem)</label><div style="border:2px dashed var(--dourado); padding:15px; text-align:center; border-radius:8px; cursor:pointer;" onclick="document.getElementById(\'dep_file\').click()"><div style="font-size:20px;">☁️</div><p style="font-size:10px; color:var(--texto-mut);" id="dep_file_nome">Clique para anexar (Máx. 5MB)</p></div><input type="file" id="dep_file" accept="image/*" style="display:none" onchange="mostrarFicheiro(this,\'dep_file_nome\')"></div><button class="btn-dourado" onclick="enviarDeposito()">ENVIAR</button></div>';
+  h+='</div>'; return h;
+}
+
+function mostrarFicheiro(input,id){ if(input.files&&input.files[0]) document.getElementById(id).textContent='✅ '+input.files[0].name; }
+
+function enviarDeposito(){
+  var u=usuarioAtual; var valor=parseFloat(document.getElementById('dep_valor').value); var conta=document.getElementById('dep_conta').value.trim(); var file=document.getElementById('dep_file').files[0];
+  if(isNaN(valor)||valor<MIN_DEPOSITO){alert('Valor mínimo: '+formatKz(MIN_DEPOSITO));return;} if(!conta){alert('Informe a conta usada.');return;} if(!file){alert('Envie o comprovativo.');return;}
+  var reader=new FileReader();
+  reader.onload=function(){ var comp=reader.result; if(comp.length>2000000){alert('Imagem muito grande.');return;} db.collection('depositos').add({ userId:u.uid, userNome:u.nome, userTelefone:u.telefone, valor:valor, conta:conta, comprovativo:comp, data:new Date().toLocaleString('pt-BR'), status:'pendente', timestamp:firebase.firestore.FieldValue.serverTimestamp() }).then(function(){ alert('✅ Depósito enviado!'); carregarTudo(function(){mudarTab('inicio');}); }); };
+  reader.readAsDataURL(file);
+}
+
+function renderSacar(){
+  var u=usuarioAtual;
+  var h='<div class="secao-titulo"><h3>🏧 Levantamento</h3><a onclick="mudarTab(\'inicio\')">Voltar</a></div><div style="padding:0 15px;">';
+  h+='<div style="background:rgba(37,211,102,0.1); border-left:3px solid var(--verde); color:var(--verde); padding:10px; border-radius:6px; font-size:11px; margin-bottom:10px; text-align:center; font-weight:800;">⏱️ Aprovado em 5 MINUTOS.</div>';
+  h+='<div class="saldo-card" style="padding:12px; margin:0 0 10px 0;"><h3>Saldo Disponível</h3><div class="valor" style="font-size:22px; margin-bottom:0;">'+formatKz(u.saldo)+'</div></div>';
+  h+='<div class="card-mini" style="border:1px solid var(--dourado);"><div class="info">Mínimo: <b>'+formatKz(MIN_SAQUE)+'</b> | Taxa: <b>'+(TAXA_SAQUE*100)+'%</b></div><div class="form-group" style="margin-top:8px;"><label>Valor a Levantar (Kz)</label><input type="number" id="saq_valor" placeholder="Ex: 1000"></div><div class="form-group"><label>Método</label><select id="saq_metodo" onchange="mudarMetodoSaque()"><option value="referencia">Pagamento por Referência</option><option value="iban">Transferência Bancária (IBAN)</option></select></div><div id="saq_campo"></div><button class="btn-dourado" onclick="enviarSaque()">SOLICITAR</button></div>';
+  h+='</div>'; setTimeout(mudarMetodoSaque,50); return h;
+}
+
+function mudarMetodoSaque(){ var met=document.getElementById('saq_metodo'); if(!met)return; var el=document.getElementById('saq_campo'); if(met.value==='referencia'){ el.innerHTML='<div class="form-group"><label>Nº de telefone</label><input type="tel" id="saq_conta" placeholder="9XX XXX XXX" inputmode="numeric"></div><div class="form-group"><label>Nome do Proprietário</label><input type="text" id="saq_nome" placeholder="Nome do titular"></div>'; } else { el.innerHTML='<div class="form-group"><label>IBAN de destino</label><input type="text" id="saq_conta" placeholder="AO06..."></div><div class="form-group"><label>Nome do Titular</label><input type="text" id="saq_nome" placeholder="Nome do titular"></div>'; } }
+
+function enviarSaque(){
+  var u=usuarioAtual; var valor=parseFloat(document.getElementById('saq_valor').value); var metodo=document.getElementById('saq_metodo').value; var conta=document.getElementById('saq_conta').value.trim(); var nomeDest=document.getElementById('saq_nome').value.trim();
+  if(isNaN(valor)||valor<MIN_SAQUE){alert('Valor mínimo: '+formatKz(MIN_SAQUE));return;} if(valor>u.saldo){alert('Saldo insuficiente.');return;} if(!conta||!nomeDest){alert('Preencha os dados.');return;}
+  var taxa=valor*TAXA_SAQUE; var liquido=valor-taxa; var metNome=metodo==='referencia'?'Referência':'IBAN';
+  if(!confirm('Bruto: '+formatKz(valor)+'\nTaxa: '+formatKz(taxa)+'\nLíquido: '+formatKz(liquido)+'\nMétodo: '+metNome+'\n\nConfirmar?'))return;
+  var novoSaldo=u.saldo-valor; var novoSacado=(u.totalSacado||0)+valor;
+  db.collection('usuarios').doc(u.uid).update({saldo:novoSaldo,totalSacado:novoSacado}).then(function(){ return db.collection('saques').add({ userId:u.uid, userNome:u.nome, userTelefone:u.telefone, valor:valor, taxa:taxa, liquido:liquido, metodo:metNome, conta:conta, nomeDestino:nomeDest, data:new Date().toLocaleString('pt-BR'), status:'pendente', timestamp:firebase.firestore.FieldValue.serverTimestamp() }); }).then(function(){ usuarioAtual.saldo=novoSaldo; alert('✅ Solicitado!'); carregarTudo(function(){mudarTab('inicio');}); });
+  }function renderEquipa(){
+  var u=usuarioAtual; var conv=usuarios.filter(function(x){return x.convidadoPor===u.codigoConvite;});
+  var h='<div class="secao-titulo"><h3>👥 Indicações</h3><a onclick="mudarTab(\'inicio\')">Voltar</a></div><div style="padding:0 15px;">';
+  h+='<div class="saldo-card" style="margin:0 0 10px 0; padding:12px; text-align:center;"><h3 style="justify-content:center">Total de Convidados</h3><div class="valor" style="margin:5px 0 0 0;">'+conv.length+'</div></div>';
+  h+='<div class="card-mini" style="border:1px solid var(--dourado);"><div class="nome">🔗 Seu Link de Convite</div><div style="background:var(--bg-escuro); padding:8px; border-radius:6px; font-size:10px; color:var(--dourado); word-break:break-all; margin:8px 0; border:1px solid rgba(212,175,55,0.3)">'+u.linkConvite+'</div><button class="btn-dourado" onclick="copiar(\''+u.linkConvite+'\')">📋 COPIAR LINK</button><button class="btn-whats" onclick="partilharWA(\''+u.linkConvite+'\')" style="margin-top:6px;">💬 PARTILHAR</button></div>';
+  h+='<div class="card-mini"><div class="info">🎁 Código: <b style="color:var(--dourado); font-size:13px">'+u.codigoConvite+'</b></div><div class="info" style="margin-top:5px;">Ganhe <b style="color:var(--verde)">5%</b> de bónus por cada convidado que investir.</div></div>';
+  if(conv.length>0){ h+='<h3 class="secao-titulo" style="margin-top:15px;">Convidados</h3>'; conv.forEach(function(c){ h+='<div class="card-mini" style="display:flex; justify-content:space-between; align-items:center;"><div><div class="nome" style="font-size:12px">'+c.nome+'</div><div class="info">'+c.telefone+'</div></div><div style="font-size:9px; color:var(--texto-mut)">'+c.dataRegisto+'</div></div>'; }); }
+  h+='</div>'; return h;
+}
+function partilharWA(link){ var m='🚀 Junta-te a mim na Great Wealth Global!\n\n💰 Ganha dinheiro investindo.\n\n🔗 Registe-se: '+link; window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank'); }
+
+function renderPerfil(){
+  var u=usuarioAtual; var ini=u.nome.charAt(0).toUpperCase();
+  var h='<div class="secao-titulo"><h3>👤 Meu Perfil</h3><a onclick="mudarTab(\'inicio\')">Voltar</a></div><div style="padding:0 15px;">';
+  h+='<div style="text-align:center; margin-bottom:15px;"><div style="width:60px; height:60px; border-radius:50%; background:var(--dourado); color:var(--bg-escuro); font-size:26px; font-weight:900; display:flex; align-items:center; justify-content:center; margin:0 auto 8px;">'+ini+'</div><div style="font-size:16px; font-weight:900;">'+u.nome+'</div><div style="font-size:11px; color:var(--dourado); font-weight:800; margin-top:4px;">'+u.codigoConvite+'</div></div>';
+  h+='<div class="card-mini" style="padding:0;"><div class="info" style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>Telefone</span><b>'+u.telefone+'</b></div><div class="info" style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>Saldo</span><b style="color:var(--dourado)">'+formatKz(u.saldo)+'</b></div><div class="info" style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>Total Depositado</span><b>'+formatKz(u.totalDepositado||0)+'</b></div><div class="info" style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05);"><span>Total Sacado</span><b>'+formatKz(u.totalSacado||0)+'</b></div><div class="info" style="display:flex; justify-content:space-between; padding:10px;"><span>Total Bónus</span><b>'+formatKz(u.totalBonus||0)+'</b></div></div>';
+  h+='<div style="margin-top:15px;"><button class="btn-dourado" onclick="abrirAlterarSenha()">🔑 ALTERAR SENHA</button><button class="btn-suporte" onclick="abrirSuporte()">🎧 FALAR COM SUPORTE</button><button class="btn-whats" onclick="abrirGrupoWA()">💬 GRUPO WHATSAPP</button><button class="btn-dourado" style="background:var(--vermelho); color:#fff; margin-top:10px;" onclick="sair()">🚪 TERMINAR SESSÃO</button></div>';
+  h+='</div>'; return h;
+}
+
+function abrirAlterarSenha(){
+  var atual=prompt('Digite a senha atual (6 dígitos):'); if(!atual||atual.length!==6){alert('Senha inválida.');return;}
+  var nova=prompt('Digite a nova senha (6 dígitos):'); if(!nova||nova.length!==6){alert('A nova senha deve ter 6 dígitos.');return;}
+  var conf=prompt('Confirme a nova senha:'); if(nova!==conf){alert('As senhas não coincidem.');return;}
+  var user=auth.currentUser; if(!user){alert('Sessão expirada.');return;}
+  var cred=firebase.auth.EmailAuthProvider.credential(user.email,atual);
+  user.reauthenticateWithCredential(cred).then(function(){ return user.updatePassword(nova); }).then(function(){ alert('✅ Senha alterada!'); }).catch(function(err){ alert(err.code==='auth/wrong-password'?'Senha atual incorreta.':'Erro ao alterar.'); });
+}
+
+function mudarTabAdmin(tab){
+  var items=document.querySelectorAll('.sidebar-item'); for(var i=0;i<items.length;i++) items[i].classList.remove('active');
+  if(tab==='dashboard') items[0].classList.add('active'); if(tab==='usuarios') items[1].classList.add('active'); if(tab==='financeiro') items[2].classList.add('active'); if(tab==='saques') items[3].classList.add('active'); if(tab==='config') items[4].classList.add('active');
+  document.getElementById('adminAvatar').textContent=usuarioAtual.nome.charAt(0).toUpperCase();
+  var c=document.getElementById('conteudoAdmin');
+  if(tab==='dashboard') c.innerHTML=renderAdminDashboard(); else if(tab==='usuarios') c.innerHTML=renderAdminUsuarios(); else if(tab==='financeiro') c.innerHTML=renderAdminFinanceiro(); else if(tab==='saques') c.innerHTML=renderAdminSaques(); else if(tab==='config') c.innerHTML=renderAdminConfig();
+  window.scrollTo(0,0);
+}
+
+function renderAdminDashboard(){
+  var pendDep=depositos.filter(function(d){return d.status==='pendente';}); var pendSaq=saques.filter(function(s){return s.status==='pendente';});
+  var totalDep=0,totalSaq=0; depositos.forEach(function(d){if(d.status==='aprovado')totalDep+=d.valor;}); saques.forEach(function(s){if(s.status==='pago')totalSaq+=s.valor;});
+  var h='<div class="secao-titulo" style="margin-top:0"><h3>👑 Visão Geral</h3></div>';
+  h+='<div class="saldo-stats" style="grid-template-columns:1fr 1fr 1fr; margin-bottom:15px;">';
+  h+='<div class="saldo-box" style="flex-direction:column; text-align:center; padding:8px;"><div class="ico">👥</div><div class="info"><h4>'+usuarios.length+'</h4><p>Users</p></div></div>';
+  h+='<div class="saldo-box" style="flex-direction:column; text-align:center; padding:8px;"><div class="ico">💳</div><div class="info"><h4 class="dourado">'+pendDep.length+'</h4><p>Dep.</p></div></div>';
+  h+='<div class="saldo-box" style="flex-direction:column; text-align:center; padding:8px;"><div class="ico">🏧</div><div class="info"><h4 class="dourado">'+pendSaq.length+'</h4><p>Saq.</p></div></div></div>';
+  h+='<div class="admin-section-title">🛠️ Ações Rápidas</div><div class="admin-grid">';
+  h+='<div class="admin-btn" onclick="admCreditarTodos()"><div class="ico bg-verde">💰</div><div class="info"><h4>Creditar Rendas</h4><p>Manual</p></div></div>';
+  h+='<div class="admin-btn" onclick="mudarTabAdmin(\'usuarios\')"><div class="ico bg-azul">👥</div><div class="info"><h4>Usuários</h4><p>Gerir</p></div></div>';
+  h+='<div class="admin-btn" onclick="mudarTabAdmin(\'financeiro\')"><div class="ico bg-roxo">💳</div><div class="info"><h4>Aprovar Dep.</h4><p>'+pendDep.length+' pend.</p></div></div>';
+  h+='<div class="admin-btn" onclick="mudarTabAdmin(\'saques\')"><div class="ico bg-ouro">🏧</div><div class="info"><h4>Processar Saq.</h4><p>'+pendSaq.length+' pend.</p></div></div></div>';
+  h+='<div class="admin-section-title">📊 Resumo Financeiro</div><div class="saldo-stats">';
+  h+='<div class="saldo-box"><div class="info"><p>Total Depositado</p><h4 class="verde">'+formatKz(totalDep)+'</h4></div></div>';
+  h+='<div class="saldo-box"><div class="info"><p>Total Sacado</p><h4 style="color:var(--vermelho)">'+formatKz(totalSaq)+'</h4></div></div></div>';
+  return h;
+}
+
+function renderAdminUsuarios(){
+  var h='<div class="secao-titulo" style="margin-top:0"><h3>👥 Gestão de Usuários</h3></div>';
+  h+='<div class="admin-input-group"><input type="text" id="adm_busca" placeholder="🔍 Buscar nome, tel ou código..." oninput="filtrarUsuarios()"></div>';
+  h+='<div id="adm_resultado" style="margin-bottom:15px;"><div class="info" style="color:var(--texto-mut); font-size:11px; text-align:center;">Digite algo para pesquisar...</div></div>';
+  h+='<div class="admin-section-title">💼 Ajustar Saldo</div><div class="card-mini">';
+  h+='<div class="admin-input-group"><label>Selecione o Usuário</label><select id="adm_user"><option value="">-- Selecione --</option>';
+  usuarios.forEach(function(x){ h+='<option value="'+x.uid+'">'+x.nome+' ('+x.telefone+') — '+formatKz(x.saldo)+'</option>'; });
+  h+='</select></div><div class="admin-input-group"><label>Valor (+ ou -)</label><input type="number" id="adm_valor" placeholder="Ex: 5000"></div><button class="btn-dourado" onclick="admAjustarSaldo()">APLICAR</button></div>';
+  return h;
+}
+
+function filtrarUsuarios(){
+  var q=document.getElementById('adm_busca').value.toLowerCase().trim(); var el=document.getElementById('adm_resultado');
+  if(!q){ el.innerHTML='<div class="info" style="color:var(--texto-mut); font-size:11px; text-align:center;">Digite algo...</div>'; return; }
+  var res=usuarios.filter(function(x){ return (x.nome||'').toLowerCase().indexOf(q)>-1 || (x.telefone||'').indexOf(q)>-1 || (x.codigoConvite||'').toLowerCase().indexOf(q)>-1; });
+  if(res.length===0){el.innerHTML='<div class="info" style="color:var(--texto-mut); font-size:11px;">Nenhum resultado.</div>';return;}
+  var h='';
+  res.forEach(function(x){
+    h+='<div class="card-mini" style="border:1px solid var(--dourado);"><div class="nome">'+x.nome+' '+(x.bloqueado?'🔴':(x.admin?'👑':'🟢'))+'</div><div class="info">📱 '+x.telefone+'</div><div class="info">💰 Saldo: <b>'+formatKz(x.saldo)+'</b></div><div class="info">🎁 Código: '+x.codigoConvite+' | De: '+(x.convidadoPor||'—')+'</div><div class="info">📈 Planos: '+(x.planosAtivos?x.planosAtivos.length:0)+'</div><div class="acoes">';
+    h+='<button class="btn-cinza" onclick="admAcessarConta(\''+x.uid+'\')">🔓 Acessar</button><button class="btn-cinza" onclick="admToggleBlock(\''+x.uid+'\')">'+(x.bloqueado?'Desbloq.':'Bloq.')+'</button><button class="btn-rejeitar" onclick="admEliminar(\''+x.uid+'\')">🗑️</button></div></div>';
+  });
+  el.innerHTML=h;
+}
+
+function admAcessarConta(uid){
+  var u=usuarios.filter(function(x){return x.uid===uid;})[0]; if(!u)return;
+  var novaSenha = prompt('⚠️ ACESSO ADMIN\n\nPara entrar na conta de '+u.nome+':\n\nDigite a senha temporária (6 dígitos):');
+  if(!novaSenha || novaSenha.length !== 6){alert('Senha deve ter 6 dígitos.');return;}
+  db.collection('usuarios').doc(uid).update({ senhaResetada: novaSenha }).then(function(){
+    alert('✅ Senha definida!\n\nNÚMERO: '+u.telefone+'\nSENHA: '+novaSenha+'\n\n1. Sair do painel.\n2. Ir ao login normal.\n3. Inserir os dados acima.');
+  });
+}
+
+function admToggleBlock(uid){ var u=usuarios.filter(function(x){return x.uid===uid;})[0]; if(!u)return; var novo=!u.bloqueado; db.collection('usuarios').doc(uid).update({bloqueado:novo}).then(function(){ alert(novo?'🔒 Bloqueado.':'🔓 Desbloqueado.'); carregarTudo(function(){ filtrarUsuarios(); }); }); }
+function admEliminar(uid){ if(!confirm('⚠️ Eliminar permanentemente?'))return; db.collection('usuarios').doc(uid).delete().then(function(){ alert('✅ Eliminado.'); carregarTudo(function(){ filtrarUsuarios(); }); }); }
+function admAjustarSaldo(){ var uid=document.getElementById('adm_user').value; var v=parseFloat(document.getElementById('adm_valor').value); if(!uid||isNaN(v)||v===0){alert('Preencha os dados.');return;} var u=usuarios.filter(function(x){return x.uid===uid;})[0]; if(!u)return; var novo=u.saldo+v; if(novo<0){alert('Saldo negativo.');return;} db.collection('usuarios').doc(uid).update({saldo:novo}).then(function(){ alert('✅ Novo saldo: '+formatKz(novo)); carregarTudo(function(){ mudarTabAdmin('usuarios'); }); }); }
+function admCreditarTodos(){
+  if(!confirm('Creditar rendas para TODOS os usuários com planos ativos?'))return;
+  var totalGeral=0,contador=0;
+  var promises=usuarios.map(function(u){ if(!u.planosAtivos||u.planosAtivos.length===0) return Promise.resolve(); return creditarRendasPendentes(u).then(function(v){ if(v>0){totalGeral+=v;contador++;} }); });
+  Promise.all(promises).then(function(){ alert('✅ Créditos processados!\n\nUsuários: '+contador+'\nTotal: '+formatKz(totalGeral)); carregarTudo(function(){ mudarTabAdmin('dashboard'); }); });
+  }function renderAdminFinanceiro(){
+  var pend=depositos.filter(function(d){return d.status==='pendente';});
+  var h='<div class="secao-titulo" style="margin-top:0"><h3>💳 Depósitos Pendentes</h3></div>';
+  if(pend.length===0){ h+='<div class="info" style="text-align:center; padding:20px; color:var(--texto-mut); font-size:11px;">Nenhum pendente.</div>'; }
+  else {
+    pend.forEach(function(d){
+      h+='<div class="card-mini" style="border-left:3px solid var(--dourado)"><div class="nome">'+d.userNome+'</div><div class="info">📱 '+d.userTelefone+'</div><div class="info">💰 Valor: <b style="color:var(--verde)">'+formatKz(d.valor)+'</b></div><div class="info">🏦 Conta: '+d.conta+'</div><div class="info">📅 '+d.data+'</div>';
+      if(d.comprovativo) h+='<img src="'+d.comprovativo+'" style="width:100%; border-radius:6px; margin-top:8px; max-height:150px; object-fit:contain; background:#fff">';
+      h+='<div class="acoes"><button class="btn-aprovar" onclick="admAprovarDep(\''+d.docId+'\')">✅ Aprovar</button><button class="btn-rejeitar" onclick="admRejeitarDep(\''+d.docId+'\')">❌ Rejeitar</button></div></div>';
+    });
+  } return h;
+}
+function admAprovarDep(docId){
+  var d=depositos.filter(function(x){return x.docId===docId;})[0]; if(!d||d.status!=='pendente')return; var u=usuarios.filter(function(x){return x.uid===d.userId;})[0]; if(!u)return;
+  var novoSaldo=u.saldo+d.valor; var novoTotal=(u.totalDepositado||0)+d.valor;
+  db.collection('usuarios').doc(d.userId).update({saldo:novoSaldo,totalDepositado:novoTotal}).then(function(){ return db.collection('depositos').doc(docId).update({status:'aprovado',dataAprovacao:new Date().toLocaleString('pt-BR')}); })
+  .then(function(){ if(u.convidadoPor){ db.collection('usuarios').where('codigoConvite','==',u.convidadoPor).get().then(function(s){ if(s.size>0){ var patr=s.docs[0].data(); var bonus=d.valor*BONUS_CONVITE_PCT; var novoBonus=(patr.totalBonus||0)+bonus; var novoSaldoPatr=(patr.saldo||0)+bonus; db.collection('usuarios').doc(s.docs[0].id).update({totalBonus:novoBonus,saldo:novoSaldoPatr}); } }).catch(function(){}); } alert('✅ Depósito aprovado!'); carregarTudo(function(){ mudarTabAdmin('financeiro'); }); });
+}
+function admRejeitarDep(docId){ db.collection('depositos').doc(docId).update({status:'rejeitado'}).then(function(){ alert('Rejeitado.'); carregarTudo(function(){ mudarTabAdmin('financeiro'); }); }); }
+
+function renderAdminSaques(){
+  var pend=saques.filter(function(s){return s.status==='pendente';});
+  var h='<div class="secao-titulo" style="margin-top:0"><h3>🏧 Saques Pendentes</h3></div>';
+  if(pend.length===0){ h+='<div class="info" style="text-align:center; padding:20px; color:var(--texto-mut); font-size:11px;">Nenhum pendente.</div>'; }
+  else {
+    pend.forEach(function(s){
+      h+='<div class="card-mini" style="border-left:3px solid var(--vermelho)"><div class="nome">'+s.userNome+'</div><div class="info">📱 '+s.userTelefone+'</div><div class="info">💰 Bruto: <b>'+formatKz(s.valor)+'</b> | Líq: <b style="color:var(--verde)">'+formatKz(s.liquido)+'</b></div><div class="info">📤 '+s.metodo+'</div><div class="info">🏦 '+s.conta+' ('+s.nomeDestino+')</div><div class="info">📅 '+s.data+'</div>';
+      h+='<div class="acoes"><button class="btn-aprovar" onclick="admAprovarSaq(\''+s.docId+'\')">✅ Pago</button><button class="btn-rejeitar" onclick="admRejeitarSaq(\''+s.docId+'\')">❌ Rejeitar</button></div></div>';
+    });
+  } return h;
+}
+function admAprovarSaq(docId){ db.collection('saques').doc(docId).update({status:'pago',dataPagamento:new Date().toLocaleString('pt-BR')}).then(function(){ alert('✅ Pago!'); carregarTudo(function(){ mudarTabAdmin('saques'); }); }); }
+function admRejeitarSaq(docId){
+  var s=saques.filter(function(x){return x.docId===docId;})[0]; if(!s)return; var u=usuarios.filter(function(x){return x.uid===s.userId;})[0]; if(!u)return;
+  var novoSaldo=u.saldo+s.valor; db.collection('usuarios').doc(s.userId).update({saldo:novoSaldo}).then(function(){ return db.collection('saques').doc(docId).update({status:'rejeitado'}); }).then(function(){ alert('Rejeitado. Valor devolvido.'); carregarTudo(function(){ mudarTabAdmin('saques'); }); });
+}
+
+function renderAdminConfig(){
+  var h='<div class="secao-titulo" style="margin-top:0"><h3>⚙️ Configurações</h3></div><div class="info" style="font-size:10px; color:var(--texto-mut); margin-bottom:10px;">Altere os dados abaixo.</div>';
+  h+='<div class="card-mini"><div class="nome">📞 Contactos e Links</div>';
+  h+='<div class="admin-input-group" style="margin-top:8px;"><label>Suporte 1</label><input type="text" id="cfg_sup1" value="'+SUPORTE_1+'"></div>';
+  h+='<div class="admin-input-group"><label>Suporte 2</label><input type="text" id="cfg_sup2" value="'+SUPORTE_2+'"></div>';
+  h+='<div class="admin-input-group"><label>Link do Grupo WhatsApp</label><input type="text" id="cfg_grupo" value="'+LINKS_WHATSAPP.grupo+'" placeholder="https://..."></div></div>';
+  h+='<div class="card-mini"><div class="nome">🏦 Dados de Depósito</div>';
+  h+='<div class="admin-input-group" style="margin-top:8px;"><label>IBAN</label><input type="text" id="cfg_iban" value="'+DADOS_DEPOSITO.iban+'"></div>';
+  h+='<div class="admin-input-group"><label>Titular</label><input type="text" id="cfg_titular" value="'+DADOS_DEPOSITO.titular+'"></div>';
+  h+='<div class="admin-input-group"><label>PayPay Entidade</label><input type="text" id="cfg_pp_ent" value="'+DADOS_DEPOSITO.paypayEntidade+'"></div>';
+  h+='<div class="admin-input-group"><label>PayPay Ref</label><input type="text" id="cfg_pp_ref" value="'+DADOS_DEPOSITO.paypayRef+'"></div>';
+  h+='<div class="admin-input-group"><label>Unitel Entidade</label><input type="text" id="cfg_ut_ent" value="'+DADOS_DEPOSITO.unitelEntidade+'"></div>';
+  h+='<div class="admin-input-group"><label>Unitel Ref</label><input type="text" id="cfg_ut_ref" value="'+DADOS_DEPOSITO.unitelRef+'"></div></div>';
+  h+='<div class="card-mini"><div class="nome">💰 Taxas e Limites</div>';
+  h+='<div class="admin-input-group" style="margin-top:8px;"><label>Taxa de Saque (%)</label><input type="number" id="cfg_taxa" value="'+(TAXA_SAQUE*100)+'"></div>';
+  h+='<div class="admin-input-group"><label>Mín. Saque (Kz)</label><input type="number" id="cfg_minsaq" value="'+MIN_SAQUE+'"></div>';
+  h+='<div class="admin-input-group"><label>Mín. Depósito (Kz)</label><input type="number" id="cfg_mindep" value="'+MIN_DEPOSITO+'"></div></div>';
+  h+='<button class="btn-dourado" onclick="guardarConfigAdmin()">💾 GUARDAR</button>';
+  return h;
+}
+
+function guardarConfigAdmin(){
+  var sup1=document.getElementById('cfg_sup1').value.trim(); var sup2=document.getElementById('cfg_sup2').value.trim(); var grupo=document.getElementById('cfg_grupo').value.trim(); var iban=document.getElementById('cfg_iban').value.trim(); var titular=document.getElementById('cfg_titular').value.trim(); var pp_ent=document.getElementById('cfg_pp_ent').value.trim(); var pp_ref=document.getElementById('cfg_pp_ref').value.trim(); var ut_ent=document.getElementById('cfg_ut_ent').value.trim(); var ut_ref=document.getElementById('cfg_ut_ref').value.trim(); var taxa=parseFloat(document.getElementById('cfg_taxa').value); var minsaq=parseFloat(document.getElementById('cfg_minsaq').value); var mindep=parseFloat(document.getElementById('cfg_mindep').value);
+  var dados={ suporte1:sup1, suporte2:sup2, whatsappGrupo:grupo, iban:iban, titular:titular, paypayEntidade:pp_ent, paypayRef:pp_ref, unitelEntidade:ut_ent, unitelRef:ut_ref, taxaSaque:taxa/100, minSaque:minsaq, minDeposito:mindep, atualizadoEm:new Date().toLocaleString('pt-BR') };
+  db.collection('config').doc('global').set(dados,{merge:true}).then(function(){ alert('✅ Atualizado!'); carregarTudo(function(){ mudarTabAdmin('config'); }); }).catch(function(){ alert('❌ Erro.'); });
+}
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    db.collection('usuarios').doc(user.uid).get().then(function(doc){
+      if(doc.exists){ var d=doc.data(); d.uid=doc.id; if(d.bloqueado){ alert('Conta bloqueada.'); auth.signOut(); return; } usuarioAtual=d; abrirApp(); } else { mostrarTela('telaAuth'); }
+    }).catch(function(err){ console.error(err); mostrarTela('telaAuth'); });
+  } else {
+    mostrarTela('telaAuth');
+    try { var p=new URLSearchParams(window.location.search); var ref=p.get('ref'); if(ref){ setTimeout(function(){ var c=document.getElementById('r_code'); if(c) c.value=ref.toUpperCase(); },300); } } catch(e){}
+  }
+});
+</script>
+</body>
+</html>
